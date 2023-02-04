@@ -20,6 +20,11 @@ public class playerMouv : MonoBehaviour
     public Transform SpawnReal;
     public Transform SpawnSpirit;
 
+    public float wallStickTime = 1.0f;
+    public float wallStickForce = 10.0f;
+
+    private float timeStickingToWall;
+    private bool isStickingToWall;
 
     void Start()
     {
@@ -29,7 +34,7 @@ public class playerMouv : MonoBehaviour
 
     void Update()
     {
-        transform.eulerAngles = new Vector3(0, 0, 0);
+        //transform.eulerAngles = new Vector3(0, 0, 0);
         playerMoove();
         checkButons();
         checkingWorld();
@@ -37,8 +42,12 @@ public class playerMouv : MonoBehaviour
 
     void playerMoove()
     {
+        float vertical=0;
         float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        if (spiritWorld)
+        {
+            vertical = Input.GetAxis("Vertical");
+        }
 
         Vector2 movement = new Vector2(horizontal, vertical);
 
@@ -49,15 +58,12 @@ public class playerMouv : MonoBehaviour
         if (!spiritWorld)
         {
             rb.gravityScale = 1;
-            rb.constraints = RigidbodyConstraints2D.FreezePositionY;
 
             canGoUp = false;
             Debug.Log("real world");
         }
         else
         {
-            rb.constraints = RigidbodyConstraints2D.None;
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             rb.gravityScale = 0;
             Debug.Log("spirit world");
             canGoUp = true;
