@@ -15,6 +15,11 @@ public class playerMouv : MonoBehaviour
     bool onChangingWorld = false;
     bool canGoUp = false;
 
+    bool spiritWorld = false;
+
+    public Transform SpawnReal;
+    public Transform SpawnSpirit;
+
 
     void Start()
     {
@@ -22,21 +27,9 @@ public class playerMouv : MonoBehaviour
         checkingWorld();
     }
 
-    private void Awake()
-    {
-        if (!created)
-        {
-            DontDestroyOnLoad(this.gameObject);
-            created = true;
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
-    }
-
     void Update()
     {
+        transform.eulerAngles = new Vector3(0, 0, 0);
         playerMoove();
         checkButons();
         checkingWorld();
@@ -53,22 +46,15 @@ public class playerMouv : MonoBehaviour
     }
     void checkingWorld()
     {
-        if (SceneManager.GetActiveScene().name.StartsWith("r"))
+        if (spiritWorld)
         {
             rb.gravityScale = 1;
-            if (onChangingWorld)
-            {
-                transform.position = new Vector3(transform.position.x, -3, transform.position.z);
-                onChangingWorld = false;
-            }
-            else
-            {
-               rb.constraints = RigidbodyConstraints2D.FreezePositionY;
-            }
+            rb.constraints = RigidbodyConstraints2D.FreezePositionY;
+
             canGoUp = false;
             Debug.Log("real world");
         }
-        else if (SceneManager.GetActiveScene().name.StartsWith("s"))
+        else
         {
             rb.constraints = RigidbodyConstraints2D.None;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
@@ -80,14 +66,14 @@ public class playerMouv : MonoBehaviour
 
     void checkButons ()
     {
-        if (Input.GetButton("Interact")) {
+        if (Input.GetButtonDown("Interact")) {
             talkingToSpirit();
         }
         if (Input.GetButton("Climb"))
         {
             climbObstacle();
         }
-        if (Input.GetButton("ChangingWorld"))
+        if (Input.GetButtonDown("ChangingWorld"))
         {
             changingWorld();
         }
@@ -105,16 +91,14 @@ public class playerMouv : MonoBehaviour
 
     void changingWorld ()
     {
-        Debug.Log("change world");
-        if (SceneManager.GetActiveScene().name.StartsWith("s"))
+        if (spiritWorld)
         {
-            SceneManager.LoadScene("rScene");
-            Debug.Log("to real");
-        }
-        else if (SceneManager.GetActiveScene().name.StartsWith("r") && canChangingWorld)
+            transform.position = new Vector3(transform.position.x, SpawnSpirit.position.y, transform.position.z);
+            spiritWorld = false;
+        } else
         {
-            SceneManager.LoadScene("sScene");
-            Debug.Log("to spirit");
+            transform.position = new Vector3(transform.position.x, SpawnReal.position.y, transform.position.z);
+            spiritWorld = true;
         }
         onChangingWorld = true;
     }
