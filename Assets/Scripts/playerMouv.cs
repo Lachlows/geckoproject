@@ -12,7 +12,6 @@ public class playerMouv : MonoBehaviour
     private static bool created = false;
 
     bool canChangingWorld = false;
-    bool onChangingWorld = false;
     bool canGoUp = false;
 
     bool spiritWorld = false;
@@ -23,8 +22,17 @@ public class playerMouv : MonoBehaviour
     public float wallStickTime = 1.0f;
     public float wallStickForce = 10.0f;
 
+    public float gravity;
+
     private float timeStickingToWall;
     private bool isStickingToWall;
+    bool canClimb = false;
+    bool falling = false;
+
+    public float timingClimb = 2f;
+
+
+    bool reverseWall =false;
 
     void Start()
     {
@@ -34,22 +42,38 @@ public class playerMouv : MonoBehaviour
 
     void Update()
     {
-        //transform.eulerAngles = new Vector3(0, 0, 0);
         playerMoove();
         checkButons();
         checkingWorld();
+        climbObstacle();
     }
 
     void playerMoove()
     {
+        Vector2 movement = new Vector2(0f,0f);
         float vertical=0;
         float horizontal = Input.GetAxis("Horizontal");
-        if (spiritWorld)
+        if (spiritWorld&&!isStickingToWall)
         {
             vertical = Input.GetAxis("Vertical");
         }
+        if (!isStickingToWall)
+        {
+            movement = new Vector2(horizontal, vertical);
 
-        Vector2 movement = new Vector2(horizontal, vertical);
+        }
+        else
+        {
+            Debug.Log("ça doit monter bordel");
+            if (!reverseWall)
+            {
+                movement = new Vector2(vertical, -horizontal);
+            }
+            else
+            {
+                movement = new Vector2(vertical, horizontal);
+            }
+        }
 
         rb.velocity = movement * speed;
     }
@@ -57,7 +81,7 @@ public class playerMouv : MonoBehaviour
     {
         if (!spiritWorld)
         {
-            rb.gravityScale = 1;
+            rb.gravityScale = gravity;
 
             canGoUp = false;
             Debug.Log("real world");
@@ -75,10 +99,6 @@ public class playerMouv : MonoBehaviour
         if (Input.GetButtonDown("Interact")) {
             talkingToSpirit();
         }
-        if (Input.GetButton("Climb"))
-        {
-            climbObstacle();
-        }
         if (Input.GetButtonDown("ChangingWorld"))
         {
             changingWorld();
@@ -92,21 +112,27 @@ public class playerMouv : MonoBehaviour
 
     void climbObstacle ()
     {
-        Debug.Log("climb");
+        if (Input.GetButton("Climb") && canClimb)
+        {
+            isStickingToWall = true;
+            Debug.Log("climb");
+        }
+        else {
+            isStickingToWall = false;
+        }
     }
-
     void changingWorld ()
     {
         if (!spiritWorld)
         {
             transform.position = new Vector3(transform.position.x, SpawnSpirit.position.y, transform.position.z);
             spiritWorld = true;
-        } else
+        }
+        else
         {
             transform.position = new Vector3(transform.position.x, SpawnReal.position.y, transform.position.z);
             spiritWorld = false;
         }
-        onChangingWorld = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -121,6 +147,28 @@ public class playerMouv : MonoBehaviour
         if (collision.gameObject.tag == "ChangingArea")
         {
             canChangingWorld = false;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "WallRight" || collision.gameObject.tag == "WallLeft")
+        {
+            canClimb = true;
+            if (collision.gameObject.tag == "WallRight")
+            {
+                reverseWall = false;
+            } else
+            {
+                reverseWall = true;
+            }
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "WallRight" || collision.gameObject.tag == "WallLeft")
+        {
+            canClimb = false;
         }
     }
 }
