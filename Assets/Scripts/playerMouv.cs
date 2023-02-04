@@ -27,9 +27,8 @@ public class playerMouv : MonoBehaviour
     private float timeStickingToWall;
     private bool isStickingToWall;
     bool canClimb = false;
-    bool falling = false;
 
-    public float timingClimb = 2f;
+    bool falling = false;
 
 
     bool reverseWall =false;
@@ -112,7 +111,7 @@ public class playerMouv : MonoBehaviour
 
     void climbObstacle ()
     {
-        if (Input.GetButton("Climb") && canClimb)
+        if (Input.GetButton("Climb") && canClimb && !falling)
         {
             isStickingToWall = true;
             Debug.Log("climb");
@@ -162,6 +161,9 @@ public class playerMouv : MonoBehaviour
             {
                 reverseWall = true;
             }
+        } else
+        {
+            falling = false;
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
