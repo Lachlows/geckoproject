@@ -12,8 +12,9 @@ public class activingObject : MonoBehaviour
 
     void Start()
     {
+        GameObject activatorGo = GameObject.FindWithTag("checkActive");
         Go = GetComponent<GameObject>();
-        activatorScript = GetComponent<spiritActivator>();
+        activatorScript = activatorGo.GetComponent<spiritActivator>();
     }
     private void Update()
     {
