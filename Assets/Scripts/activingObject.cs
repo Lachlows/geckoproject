@@ -4,35 +4,19 @@ using UnityEngine;
 
 public class activingObject : MonoBehaviour
 {
-    public int index;
     bool canInteract = false;
-    private GameObject Go;
+    public GameObject Go;
 
-    private spiritActivator activatorScript;
-
-    void Start()
-    {
-        GameObject activatorGo = GameObject.FindWithTag("checkActive");
-        Go = GetComponent<GameObject>();
-        activatorScript = activatorGo.GetComponent<spiritActivator>();
-    }
     private void Update()
     {
-        if (activatorScript.checkObjectActive(index))
-        {
-            Go.SetActive(true);
-
-        } else
-        {
-            Go.SetActive(false);
-        }
         if (canInteract&& Input.GetButtonDown("Interact"))
         {
-            activatorScript.toggleActive(index);
+            Go.SetActive(false);
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("le trigger se fait bordel");
     if(collision.CompareTag("player"))
         {
             canInteract = true;

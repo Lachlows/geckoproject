@@ -5,48 +5,18 @@ using UnityEngine;
 public class spiritActivator : MonoBehaviour
 {
 
-    public bool[] objectsState;
-    public bool[] spitirtsState;
+    public GameObject[] objects;
+    public GameObject[] spirits;
 
-    bool created = false;
 
-    private void Awake()
+    private void Update()
     {
-        if (!created)
+        for (int i = 0; i < objects.Length; i++)
         {
-            DontDestroyOnLoad(this.gameObject);
-            created = true;
+            if (!objects[i].activeInHierarchy)
+            {
+                spirits[i].SetActive(true);
+            }
         }
-        else
-        {
-            Destroy(this.gameObject);
-        }
-    }
-
-    public bool checkObjectActive(int index)
-    {
-        Debug.Log("ça check les états des objets");
-        if (objectsState[index])
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public bool checkSpiritActive(int index)
-    {
-        Debug.Log("ça check les états des esprits");
-        if (objectsState[index])
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public void toggleActive (int index)
-    {
-        Debug.Log("ça toggle les etats");
-        objectsState[index] = false;
-        spitirtsState[index] = true;
     }
 }

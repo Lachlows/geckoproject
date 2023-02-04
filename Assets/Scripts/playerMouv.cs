@@ -46,7 +46,7 @@ public class playerMouv : MonoBehaviour
     }
     void checkingWorld()
     {
-        if (spiritWorld)
+        if (!spiritWorld)
         {
             rb.gravityScale = 1;
             rb.constraints = RigidbodyConstraints2D.FreezePositionY;
@@ -91,14 +91,14 @@ public class playerMouv : MonoBehaviour
 
     void changingWorld ()
     {
-        if (spiritWorld)
+        if (!spiritWorld)
         {
             transform.position = new Vector3(transform.position.x, SpawnSpirit.position.y, transform.position.z);
-            spiritWorld = false;
+            spiritWorld = true;
         } else
         {
             transform.position = new Vector3(transform.position.x, SpawnReal.position.y, transform.position.z);
-            spiritWorld = true;
+            spiritWorld = false;
         }
         onChangingWorld = true;
     }
