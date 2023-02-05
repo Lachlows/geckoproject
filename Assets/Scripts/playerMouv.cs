@@ -56,6 +56,7 @@ public class playerMouv : MonoBehaviour
         checkButons();
         checkingWorld();
         climbObstacle();
+        animator.SetBool("isReal", !spiritWorld);
     }
 
     void playerMoove()
@@ -112,6 +113,10 @@ public class playerMouv : MonoBehaviour
         {
             spriteRenderer.flipX = false;
             animator.SetBool("onWalk", true);
+        }
+        else if (horizontal==0 && vertical!=0){
+            animator.SetBool("onWalk", true);
+            Debug.Log("àa doit bouger");
         }
         else
         {
