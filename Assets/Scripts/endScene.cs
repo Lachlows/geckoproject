@@ -1,27 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class Scenes : MonoBehaviour
+public class endScene : MonoBehaviour
 {
-    public Button playButton;
+    public Button replayButton;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        replayButton.Select();
     }
 
     // Update is called once per frame
     void Update()
     {
-        playButton.Select();
+        
     }
 
-    public void Play()
+    public void Replay()
     {
-        SceneManager.LoadScene("mainScene");
+        SceneManager.LoadScene("startScene");
     }
 }
