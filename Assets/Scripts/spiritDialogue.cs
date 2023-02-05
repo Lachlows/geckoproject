@@ -61,7 +61,7 @@ public class spiritDialogue : MonoBehaviour
         Debug.Log("collision");
         canTalk = true;
     }
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit(Collider other)
     {
         canTalk = false;
     }
