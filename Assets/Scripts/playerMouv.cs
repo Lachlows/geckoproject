@@ -14,7 +14,7 @@ public class playerMouv : MonoBehaviour
     bool canChangingWorld = false;
     bool canGoUp = false;
 
-    bool spiritWorld = false;
+    bool spiritWorld = true;
 
     public Transform SpawnReal;
     public Transform SpawnSpirit;
@@ -46,6 +46,7 @@ public class playerMouv : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.flipX = true;
         animator = GetComponent<Animator>();
+        animator.SetTrigger("onSpawn");
 
 
     }
@@ -170,13 +171,16 @@ public class playerMouv : MonoBehaviour
     }
     void changingWorld ()
     {
+        Debug.Log("je change de monde");
         if (!spiritWorld)
         {
+            animator.SetTrigger("onSpawn");
             transform.position = new Vector3(transform.position.x, SpawnSpirit.position.y, transform.position.z);
             spiritWorld = true;
         }
         else
         {
+            Debug.Log("je vais dans le monde des esprits");
             transform.position = new Vector3(transform.position.x, SpawnReal.position.y, transform.position.z);
             spiritWorld = false;
         }
