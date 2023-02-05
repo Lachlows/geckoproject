@@ -23,13 +23,19 @@ public class playerMouv : MonoBehaviour
     public float wallStickForce = 10.0f;
 
     public float gravity;
+    public float speedWall = 1f;
 
     private float timeStickingToWall;
     private bool isStickingToWall;
+
+    private Animator animator;
+
+
     bool canClimb = false;
 
     bool falling = false;
 
+    private SpriteRenderer spriteRenderer;
 
     bool reverseWall =false;
 
@@ -37,6 +43,11 @@ public class playerMouv : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         checkingWorld();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.flipX = true;
+        animator = GetComponent<Animator>();
+
+
     }
 
     void Update()
@@ -49,6 +60,7 @@ public class playerMouv : MonoBehaviour
 
     void playerMoove()
     {
+        float addSpeed = 1f;
         Vector2 movement = new Vector2(0f,0f);
         float vertical=0;
         float horizontal = Input.GetAxis("Horizontal");
@@ -67,14 +79,45 @@ public class playerMouv : MonoBehaviour
             if (!reverseWall)
             {
                 movement = new Vector2(vertical, -horizontal);
+                addSpeed = speedWall;
             }
             else
             {
                 movement = new Vector2(vertical, horizontal);
+                addSpeed = speedWall; 
             }
         }
+        if (!reverseWall&&canClimb)
+        {
+            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, -90.0f);
 
-        rb.velocity = movement * speed;
+        }
+        else if (reverseWall&&canClimb)
+                {
+            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+        } else
+        {
+            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+
+        }
+
+
+        rb.velocity = movement * speed * addSpeed;
+        if (horizontal > 0)
+        {
+            spriteRenderer.flipX = true;
+            animator.SetBool("onWalk",true);
+        }
+        else if (horizontal < 0)
+        {
+            spriteRenderer.flipX = false;
+            animator.SetBool("onWalk", true);
+        }
+        else
+        {
+            animator.SetBool("onWalk", false);
+        }
+
     }
     void checkingWorld()
     {
@@ -111,7 +154,7 @@ public class playerMouv : MonoBehaviour
 
     void climbObstacle ()
     {
-        if (Input.GetButton("Climb") && canClimb && !falling)
+        if (Input.GetButton("Climb") && canClimb)
         {
             isStickingToWall = true;
             Debug.Log("climb");
